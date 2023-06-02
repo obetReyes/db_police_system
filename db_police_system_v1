@@ -1,0 +1,429 @@
+CREATE TABLE IF NOT EXISTS  Organization(
+	organization_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, 
+	organization_name VARCHAR(300) NOT NULL,
+	organization_type VARCHAR(200) NOT NULL,
+	created_at date DEFAULT ('now'::text)::date NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  Person(
+	person_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	avatar  TEXT,
+	created_at date DEFAULT ('now'::text)::date NOT NULL,
+    updated_at timestamp without time zone DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS  Officer(
+	officer_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+);
+
+CREATE TABLE IF NOT EXISTS Commander(
+	commander_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+);
+
+CREATE TABLE IF NOT EXISTS  Executive(
+	executive_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+);
+
+CREATE TABLE IF NOT EXISTS  Offender(
+user_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+felony TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  Citizen(
+citizen_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+phone_number VARCHAR(16),
+email TEXT,
+testimony TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  Human_Description(
+	human_description_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	name VARCHAR(200) NOT NULL,
+	last_name VARCHAR(250) NOT NULL,
+	age SMALLINT NOT NULL,
+	height NUMERIC,
+	weight NUMERIC,
+	particular_signs TEXT,
+	personality_description TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  Hair(
+	hair_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+);
+
+CREATE TABLE IF NOT EXISTS  Hair_color(
+	hair_color_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	hair_color_desc varchar(300) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS  Hair_type(
+	hair_type_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	hair_type_desc varchar(300) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS  Skin_color(
+	skin_color_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	skin_color_desc varchar(300) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS  Suplement(
+suplement_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+status TEXT NOT NULL,
+injuries TEXT[] NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  spot(
+spot_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+common_name VARCHAR(250) NOT NULL,
+spot_details TEXT NOT NULL,
+street_name TEXT NOT NULL,
+square_block INTEGER,
+apartment INTEGER,
+building_floor INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS  State(
+state_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+name VARCHAR(130) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  Municipality(
+municipality_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+name VARCHAR(250) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  Neighborhood(
+neighborhood_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+name VARCHAR(130) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  Media(
+media_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+photos TEXT[],
+videos TEXT[],
+other_media TEXT[],
+created_at date DEFAULT ('now'::text)::date NOT NULL,
+updated_at timestamp without time zone DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS  Vehicle(
+vehicle_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+vehicle_type VARCHAR(250) NOT NULL,
+vehicle_desc VARCHAR(300) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS  Controversy(
+case_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+title TEXT NOT NULL UNIQUE,
+status TEXT NOT NULL,
+tags TEXT[],
+incidents TEXT,
+narrative TEXT,
+analysis TEXT,
+ocurrend_from  DATE NOT NULL,
+occurred_to DATE,
+created_at date DEFAULT ('now'::text)::date NOT NULL,
+updated_at timestamp without time zone DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS  Investigation(
+investigation_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+reason TEXT NOT NULL,
+justification TEXT NOT NULL,
+summary TEXT NOT NULL,
+created_at date DEFAULT ('now'::text)::date NOT NULL,
+updated_at timestamp without time zone DEFAULT now()
+);
+
+/* an organiaztion requires to persist his spot */
+ALTER TABLE Organization
+ADD COLUMN spot_ID INTEGER
+
+ALTER TABLE Organization
+ADD CONSTRAINT FKspot
+FOREIGN KEY(spot_ID)
+REFERENCES Spot(spot_ID);
+
+/* PERSON belongs to a Organization */
+ALTER TABLE Person 
+ADD COLUMN organization_ID INTEGER NOT NULL;
+
+ALTER TABLE Person
+ADD CONSTRAINT FKorganization
+FOREIGN KEY (organization_ID)
+REFERENCES Organization(organization_ID);
+
+/* OFFICER is a  person */
+ALTER TABLE Officer
+ADD COLUMN person_ID INTEGER NOT NULL;
+
+ALTER TABLE Officer
+ADD CONSTRAINT FKPerson
+FOREIGN KEY (person_ID)
+REFERENCES Person(Person_ID);
+
+
+/* CITIZEN is a  person */
+ALTER TABLE Citizen
+ADD COLUMN person_ID INTEGER NOT NULL;
+
+ALTER TABLE Citizen
+ADD CONSTRAINT FKPerson
+FOREIGN KEY (person_ID)
+REFERENCES Person(Person_ID);
+
+/* commander is a person */
+ALTER TABLE Commander
+ADD COLUMN person_ID INTEGER NOT NULL;
+
+ALTER TABLE Commander
+ADD CONSTRAINT FKPerson
+FOREIGN KEY (person_ID)
+REFERENCES Person(Person_ID);
+
+/* executive is a person */
+ALTER TABLE Executive
+ADD COLUMN person_ID INTEGER NOT NULL;
+
+ALTER TABLE Executive
+ADD CONSTRAINT FKPerson
+FOREIGN KEY (person_ID)
+REFERENCES Person(Person_ID);
+
+/* offender is a person */
+ALTER TABLE Offender
+ADD COLUMN person_ID INTEGER NOT NULL;
+
+ALTER TABLE Offender
+ADD CONSTRAINT FKPerson
+FOREIGN KEY (person_ID)
+REFERENCES Person(Person_ID);
+
+/* citizen is a person */
+ALTER TABLE Citizen
+ADD COLUMN person_ID INTEGER NOT NULL;
+
+ALTER TABLE Citizen
+ADD CONSTRAINT FKPerson
+FOREIGN KEY (person_ID)
+REFERENCES Person(Person_ID);
+
+/* citizen is a person */
+ALTER TABLE Citizen
+ADD COLUMN person_ID INTEGER NOT NULL;
+
+ALTER TABLE Citizen
+ADD CONSTRAINT FKPerson
+FOREIGN KEY (person_ID)
+REFERENCES Person(Person_ID);
+
+
+/* human description  is part of a person */
+ALTER TABLE Human_description
+ADD COLUMN person_ID INTEGER NOT NULL;
+
+ALTER TABLE Human_description
+ADD CONSTRAINT FKPerson
+FOREIGN KEY (person_ID)
+REFERENCES Person(Person_ID);
+
+
+/* human description includes the hair  */
+ALTER TABLE Human_description
+ADD COLUMN hair_ID INTEGER;
+
+ALTER TABLE Human_description
+ADD CONSTRAINT FKhair
+FOREIGN KEY (hair_ID)
+REFERENCES Hair(hair_ID);
+
+
+
+
+/* human description includes the hair  */
+ALTER TABLE Human_description
+ADD COLUMN hair_ID INTEGER;
+
+ALTER TABLE Human_description
+ADD CONSTRAINT FKhair
+FOREIGN KEY (hair_ID)
+REFERENCES Hair(hair_ID);
+
+
+/* hair  includes the hair_color  */
+ALTER TABLE Hair
+ADD COLUMN hair_color VARCHAR(300);
+
+ALTER TABLE Hair
+ADD CONSTRAINT FKhair_color
+FOREIGN KEY (hair_color)
+REFERENCES Hair_color(hair_color_desc);
+
+/* hair  includes the hair_type  */
+ALTER TABLE Hair
+ADD COLUMN hair_type VARCHAR(300);
+
+ALTER TABLE Hair
+ADD CONSTRAINT FKhair_type
+FOREIGN KEY (hair_type)
+REFERENCES Hair_type(Hair_type_desc);
+
+/* human description includes an skin color  */
+ALTER TABLE Human_description
+ADD COLUMN skin_color VARCHAR(300) NOT NULL;
+
+ALTER TABLE Human_description
+ADD CONSTRAINT FKskin_color
+FOREIGN KEY (skin_color)
+REFERENCES Skin_color(skin_color_desc);
+
+/* a suplement belongs to a citizen or a offender  */
+ALTER TABLE Suplement
+ADD COLUMN citizen_ID VARCHAR(300);
+
+ALTER TABLE Suplement
+ADD CONSTRAINT FKcitizen
+FOREIGN KEY (citizen_ID)
+REFERENCES Citizen(citizen_ID;
+
+/* a suplement belongs to a citizen or a offender  */
+ALTER TABLE Suplement
+ADD COLUMN offender_ID VARCHAR(300);
+
+ALTER TABLE Suplement
+ADD CONSTRAINT FKoffender
+FOREIGN KEY (offender_ID)
+REFERENCES Offender(offender_ID;
+
+/* a controversy has a location  */
+ALTER TABLE Controversy
+ADD COLUMN spot_ID VARCHAR(300) NOT NULL;
+
+ALTER TABLE Controversy
+ADD CONSTRAINT FKspot
+FOREIGN KEY (spot_ID)
+REFERENCES Spot(spot_ID;
+
+
+/* a vehicle can belong to a Controversy */
+ALTER TABLE Vehicle
+ADD COLUMN Controversy_ID VARCHAR(300);
+
+ALTER TABLE Vehicle
+ADD CONSTRAINT FKControversy
+FOREIGN KEY (controversy_ID)
+REFERENCES Controversy(controversy_ID;
+
+/* a vehicle can also belong  to an Investigation */
+ALTER TABLE Vehicle
+ADD COLUMN investigation_ID VARCHAR(300);
+
+ALTER TABLE Vehicle
+ADD CONSTRAINT FKInvestigation
+FOREIGN KEY (investigation_ID)
+REFERENCES Investigation(investigation_ID;
+
+/* media can belong  to an Investigation */
+ALTER TABLE Media
+ADD COLUMN investigation_ID VARCHAR(300);
+
+ALTER TABLE Media
+ADD CONSTRAINT FKInvestigation
+FOREIGN KEY (investigation_ID)
+REFERENCES Investigation(investigation_ID;
+
+/* media can belong  to a Vehicle */
+ALTER TABLE Media
+ADD COLUMN vehicle_ID VARCHAR(300);
+
+ALTER TABLE Media
+ADD CONSTRAINT FkVehicle
+FOREIGN KEY (vehicle_ID)
+REFERENCES Vehicle(vehicle_ID;
+
+/* media can belong  to a Controversy */
+ALTER TABLE Media
+ADD COLUMN controversy_ID VARCHAR(300);
+
+ALTER TABLE Media
+ADD CONSTRAINT FkControversy
+FOREIGN KEY (controversy_ID)
+REFERENCES Controversy(controversy_ID);
+
+/* investigation belongs to a Controversy */
+ALTER TABLE Investigation
+ADD COLUMN controversy_ID VARCHAR(300);
+
+ALTER TABLE Investigation
+ADD CONSTRAINT FkControversy
+FOREIGN KEY (controversy_ID)
+REFERENCES Controversy(controversy_ID);
+
+/* a ctizien can belong to an investigation */
+ALTER TABLE Citizen
+ADD COLUMN investigation_ID VARCHAR(300);
+
+ALTER TABLE Investigation
+ADD CONSTRAINT Fkinvestigation
+FOREIGN KEY (investigation_ID)
+REFERENCES Investigation(investigation_ID);
+
+
+/* a citizen belongs to  controversy  */
+ALTER TABLE Citizen
+ADD COLUMN controversy_ID VARCHAR(300);
+
+ALTER TABLE Citizen
+ADD CONSTRAINT FkControversy
+FOREIGN KEY (controversy_ID)
+REFERENCES Controversy(controversy_ID);
+
+/* an offender can belong to a controversy  */
+ALTER TABLE Offender
+ADD COLUMN controversy_ID VARCHAR(300);
+
+ALTER TABLE Offender
+ADD CONSTRAINT FkControversy
+FOREIGN KEY (controversy_ID)
+REFERENCES Controversy(controversy_ID;
+
+
+/* an offender can belong to an investigation  */
+ALTER TABLE Offender
+ADD COLUMN investigation_ID VARCHAR(300);
+
+ALTER TABLE Offender
+ADD CONSTRAINT FkInvestigation
+FOREIGN KEY (investigation_ID)
+REFERENCES Investigation(investigation_ID);
+
+
+/* a controversy has officers  */
+ALTER TABLE Controversy
+ADD COLUMN officer_ID  VARCHAR(300);
+
+ALTER TABLE Controversy
+ADD CONSTRAINT FkOfficers
+FOREIGN KEY (investigation_ID)
+REFERENCES Investigation(investigation_ID);
+
+
+
+/* a controversy has Commanders  */
+ALTER TABLE Controversy
+ADD COLUMN officer_ID  VARCHAR(300);
+
+ALTER TABLE Controversy
+ADD CONSTRAINT FkOfficers
+FOREIGN KEY (investigation_ID)
+REFERENCES Investigation(investigation_ID);
+
+
+/* a controversy has Executives  */
+ALTER TABLE Controversy
+ADD COLUMN officer_ID  VARCHAR(300);
+
+ALTER TABLE Controversy
+ADD CONSTRAINT FkOfficers
+FOREIGN KEY (investigation_ID)
+REFERENCES Investigation(investigation_ID);
