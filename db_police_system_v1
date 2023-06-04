@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS  Executive(
 );
 
 CREATE TABLE IF NOT EXISTS  Offender(
-user_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+offender_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 felony TEXT NOT NULL
 );
 
@@ -113,7 +113,7 @@ vehicle_desc VARCHAR(300) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS  Controversy(
-case_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+controversy_ID INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 title TEXT NOT NULL UNIQUE,
 status TEXT NOT NULL,
 tags TEXT[],
@@ -137,7 +137,7 @@ updated_at timestamp without time zone DEFAULT now()
 
 /* an organiaztion requires to persist his spot */
 ALTER TABLE Organization
-ADD COLUMN spot_ID INTEGER
+ADD COLUMN spot_ID INTEGER NOT NULL;
 
 ALTER TABLE Organization
 ADD CONSTRAINT FKspot
@@ -160,7 +160,7 @@ ADD COLUMN person_ID INTEGER NOT NULL;
 ALTER TABLE Officer
 ADD CONSTRAINT FKPerson
 FOREIGN KEY (person_ID)
-REFERENCES Person(Person_ID);
+REFERENCES Person(person_ID);
 
 
 /* CITIZEN is a  person */
@@ -170,7 +170,7 @@ ADD COLUMN person_ID INTEGER NOT NULL;
 ALTER TABLE Citizen
 ADD CONSTRAINT FKPerson
 FOREIGN KEY (person_ID)
-REFERENCES Person(Person_ID);
+REFERENCES Person(person_ID);
 
 /* commander is a person */
 ALTER TABLE Commander
@@ -179,7 +179,7 @@ ADD COLUMN person_ID INTEGER NOT NULL;
 ALTER TABLE Commander
 ADD CONSTRAINT FKPerson
 FOREIGN KEY (person_ID)
-REFERENCES Person(Person_ID);
+REFERENCES Person(person_ID);
 
 /* executive is a person */
 ALTER TABLE Executive
@@ -188,7 +188,7 @@ ADD COLUMN person_ID INTEGER NOT NULL;
 ALTER TABLE Executive
 ADD CONSTRAINT FKPerson
 FOREIGN KEY (person_ID)
-REFERENCES Person(Person_ID);
+REFERENCES Person(person_ID);
 
 /* offender is a person */
 ALTER TABLE Offender
@@ -197,25 +197,7 @@ ADD COLUMN person_ID INTEGER NOT NULL;
 ALTER TABLE Offender
 ADD CONSTRAINT FKPerson
 FOREIGN KEY (person_ID)
-REFERENCES Person(Person_ID);
-
-/* citizen is a person */
-ALTER TABLE Citizen
-ADD COLUMN person_ID INTEGER NOT NULL;
-
-ALTER TABLE Citizen
-ADD CONSTRAINT FKPerson
-FOREIGN KEY (person_ID)
-REFERENCES Person(Person_ID);
-
-/* citizen is a person */
-ALTER TABLE Citizen
-ADD COLUMN person_ID INTEGER NOT NULL;
-
-ALTER TABLE Citizen
-ADD CONSTRAINT FKPerson
-FOREIGN KEY (person_ID)
-REFERENCES Person(Person_ID);
+REFERENCES Person(person_ID);
 
 
 /* human description  is part of a person */
@@ -225,19 +207,7 @@ ADD COLUMN person_ID INTEGER NOT NULL;
 ALTER TABLE Human_description
 ADD CONSTRAINT FKPerson
 FOREIGN KEY (person_ID)
-REFERENCES Person(Person_ID);
-
-
-/* human description includes the hair  */
-ALTER TABLE Human_description
-ADD COLUMN hair_ID INTEGER;
-
-ALTER TABLE Human_description
-ADD CONSTRAINT FKhair
-FOREIGN KEY (hair_ID)
-REFERENCES Hair(hair_ID);
-
-
+REFERENCES Person(person_ID);
 
 
 /* human description includes the hair  */
@@ -266,7 +236,7 @@ ADD COLUMN hair_type VARCHAR(300);
 ALTER TABLE Hair
 ADD CONSTRAINT FKhair_type
 FOREIGN KEY (hair_type)
-REFERENCES Hair_type(Hair_type_desc);
+REFERENCES Hair_type(hair_type_desc);
 
 /* human description includes an skin color  */
 ALTER TABLE Human_description
@@ -277,73 +247,73 @@ ADD CONSTRAINT FKskin_color
 FOREIGN KEY (skin_color)
 REFERENCES Skin_color(skin_color_desc);
 
-/* a suplement belongs to a citizen or a offender  */
+/* a suplement belongs to a citizen   */
 ALTER TABLE Suplement
-ADD COLUMN citizen_ID VARCHAR(300);
+ADD COLUMN citizen_ID INTEGER;
 
 ALTER TABLE Suplement
 ADD CONSTRAINT FKcitizen
 FOREIGN KEY (citizen_ID)
-REFERENCES Citizen(citizen_ID;
+REFERENCES Citizen(citizen_ID);
 
-/* a suplement belongs to a citizen or a offender  */
+/* a suplement belongs to an offender  */
 ALTER TABLE Suplement
-ADD COLUMN offender_ID VARCHAR(300);
+ADD COLUMN offender_ID INTEGER;
 
 ALTER TABLE Suplement
 ADD CONSTRAINT FKoffender
 FOREIGN KEY (offender_ID)
-REFERENCES Offender(offender_ID;
+REFERENCES Offender(offender_ID);
 
 /* a controversy has a location  */
 ALTER TABLE Controversy
-ADD COLUMN spot_ID VARCHAR(300) NOT NULL;
+ADD COLUMN spot_ID INTEGER NOT NULL;
 
 ALTER TABLE Controversy
 ADD CONSTRAINT FKspot
 FOREIGN KEY (spot_ID)
-REFERENCES Spot(spot_ID;
+REFERENCES Spot(spot_ID);
 
 
 /* a vehicle can belong to a Controversy */
 ALTER TABLE Vehicle
-ADD COLUMN Controversy_ID VARCHAR(300);
+ADD COLUMN Controversy_ID INTEGER;
 
 ALTER TABLE Vehicle
 ADD CONSTRAINT FKControversy
 FOREIGN KEY (controversy_ID)
-REFERENCES Controversy(controversy_ID;
+REFERENCES Controversy(controversy_ID);
 
 /* a vehicle can also belong  to an Investigation */
 ALTER TABLE Vehicle
-ADD COLUMN investigation_ID VARCHAR(300);
+ADD COLUMN investigation_ID INTEGER;
 
 ALTER TABLE Vehicle
 ADD CONSTRAINT FKInvestigation
 FOREIGN KEY (investigation_ID)
-REFERENCES Investigation(investigation_ID;
+REFERENCES Investigation(investigation_ID);
 
 /* media can belong  to an Investigation */
 ALTER TABLE Media
-ADD COLUMN investigation_ID VARCHAR(300);
+ADD COLUMN investigation_ID INTEGER;
 
 ALTER TABLE Media
 ADD CONSTRAINT FKInvestigation
 FOREIGN KEY (investigation_ID)
-REFERENCES Investigation(investigation_ID;
+REFERENCES Investigation(investigation_ID);
 
 /* media can belong  to a Vehicle */
 ALTER TABLE Media
-ADD COLUMN vehicle_ID VARCHAR(300);
+ADD COLUMN vehicle_ID INTEGER;
 
 ALTER TABLE Media
 ADD CONSTRAINT FkVehicle
 FOREIGN KEY (vehicle_ID)
-REFERENCES Vehicle(vehicle_ID;
+REFERENCES Vehicle(vehicle_ID);
 
 /* media can belong  to a Controversy */
 ALTER TABLE Media
-ADD COLUMN controversy_ID VARCHAR(300);
+ADD COLUMN controversy_ID INTEGER;
 
 ALTER TABLE Media
 ADD CONSTRAINT FkControversy
@@ -352,16 +322,16 @@ REFERENCES Controversy(controversy_ID);
 
 /* investigation belongs to a Controversy */
 ALTER TABLE Investigation
-ADD COLUMN controversy_ID VARCHAR(300);
+ADD COLUMN controversy_ID INTEGER;
 
 ALTER TABLE Investigation
 ADD CONSTRAINT FkControversy
 FOREIGN KEY (controversy_ID)
 REFERENCES Controversy(controversy_ID);
 
-/* a ctizien can belong to an investigation */
+/* a citzien can belong to an investigation */
 ALTER TABLE Citizen
-ADD COLUMN investigation_ID VARCHAR(300);
+ADD COLUMN investigation_ID INTEGER;
 
 ALTER TABLE Investigation
 ADD CONSTRAINT Fkinvestigation
@@ -371,7 +341,7 @@ REFERENCES Investigation(investigation_ID);
 
 /* a citizen belongs to  controversy  */
 ALTER TABLE Citizen
-ADD COLUMN controversy_ID VARCHAR(300);
+ADD COLUMN controversy_ID INTEGER;
 
 ALTER TABLE Citizen
 ADD CONSTRAINT FkControversy
@@ -380,50 +350,37 @@ REFERENCES Controversy(controversy_ID);
 
 /* an offender can belong to a controversy  */
 ALTER TABLE Offender
-ADD COLUMN controversy_ID VARCHAR(300);
+ADD COLUMN controversy_ID INTEGER;
 
 ALTER TABLE Offender
 ADD CONSTRAINT FkControversy
 FOREIGN KEY (controversy_ID)
-REFERENCES Controversy(controversy_ID;
+REFERENCES Controversy(controversy_ID);
 
 
 /* an offender can belong to an investigation  */
 ALTER TABLE Offender
-ADD COLUMN investigation_ID VARCHAR(300);
+ADD COLUMN investigation_ID INTEGER;
 
 ALTER TABLE Offender
 ADD CONSTRAINT FkInvestigation
 FOREIGN KEY (investigation_ID)
 REFERENCES Investigation(investigation_ID);
 
-
-/* a controversy has officers  */
-ALTER TABLE Controversy
-ADD COLUMN officer_ID  VARCHAR(300);
-
-ALTER TABLE Controversy
-ADD CONSTRAINT FkOfficers
-FOREIGN KEY (investigation_ID)
-REFERENCES Investigation(investigation_ID);
+/* table which stores the commander, executives and officer assigned to a controversy */
+CREATE TABLE IF NOT EXISTS Controversy_Participant (
+    controversy_ID INT REFERENCES Controversy(controversy_ID),
+    participant_ID INT,
+    participant_type TEXT,
+    PRIMARY KEY (controversy_ID, participant_ID, participant_type)
+);
 
 
+/* table which stores the commander, executives and officer assigned to an investigation */
+CREATE TABLE IF NOT EXISTS Investigation_Participant (
+    investigation_ID INT REFERENCES Investigation(investigation_ID),
+    participant_ID INT,
+    participant_type TEXT,
+    PRIMARY KEY (investigation_ID, participant_ID, participant_type)
+);
 
-/* a controversy has Commanders  */
-ALTER TABLE Controversy
-ADD COLUMN officer_ID  VARCHAR(300);
-
-ALTER TABLE Controversy
-ADD CONSTRAINT FkOfficers
-FOREIGN KEY (investigation_ID)
-REFERENCES Investigation(investigation_ID);
-
-
-/* a controversy has Executives  */
-ALTER TABLE Controversy
-ADD COLUMN officer_ID  VARCHAR(300);
-
-ALTER TABLE Controversy
-ADD CONSTRAINT FkOfficers
-FOREIGN KEY (investigation_ID)
-REFERENCES Investigation(investigation_ID);
